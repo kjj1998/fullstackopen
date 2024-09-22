@@ -26,8 +26,17 @@ const App = () => {
     setVotes(newVotes)
   }
 
+  const findAnecdoteWithMostVotes = () => {
+    return votes.reduce(
+      (maxIndex, curVal, curIndex, arr) => {
+        return curVal > arr[maxIndex] ? curIndex : maxIndex
+      }, 0
+    )
+  }
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {anecdotes[selected]}
       <div>has {votes[selected]} votes</div>
       <div>
@@ -38,6 +47,9 @@ const App = () => {
           next anecdote
         </button>
       </div>
+      <h1>Anecdote with most votes</h1>
+      {anecdotes[findAnecdoteWithMostVotes()]}
+      <div>has {votes[findAnecdoteWithMostVotes()]} votes</div>
     </div>
   )
 }
