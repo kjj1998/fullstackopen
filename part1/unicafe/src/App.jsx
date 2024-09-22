@@ -6,7 +6,7 @@ const Header = ({ text }) => {
   )
 }
 
-const Rating = ({ text, value }) => {
+const StatisticLine = ({ text, value }) => {
   return (
     <div>{ text } { value }</div>
   )
@@ -38,12 +38,12 @@ const Statistics = (props) => {
   } else {
     return (
       <div>
-        <Rating text='good' value={props.good} />
-        <Rating text='neutral' value={props.neutral} />
-        <Rating text='bad' value={props.bad} />
-        <Rating text='all' value={props.all} />
-        <Rating text='average' value={props.average} />
-        <Rating text='positive' value={`${props.positive} %`}/>
+        <StatisticLine text='good' value={props.good} />
+        <StatisticLine text='neutral' value={props.neutral} />
+        <StatisticLine text='bad' value={props.bad} />
+        <StatisticLine text='all' value={props.all} />
+        <StatisticLine text='average' value={props.average} />
+        <StatisticLine text='positive' value={`${props.positive} %`}/>
       </div>
     )
   }
