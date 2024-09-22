@@ -31,16 +31,22 @@ const ButtonRow = ({ good, setGood, neutral, setNeutral, bad, setBad }) => {
 }
 
 const Statistics = (props) => {
-  return (
-    <div>
-      <Rating text='good' value={props.good} />
-      <Rating text='neutral' value={props.neutral} />
-      <Rating text='bad' value={props.bad} />
-      <Rating text='all' value={props.all} />
-      <Rating text='average' value={props.average} />
-      <Rating text='positive' value={`${props.positive} %`}/>
-    </div>
-  )
+  if (props.all === 0) {
+    return (
+      <div>No feedback given</div>
+    )
+  } else {
+    return (
+      <div>
+        <Rating text='good' value={props.good} />
+        <Rating text='neutral' value={props.neutral} />
+        <Rating text='bad' value={props.bad} />
+        <Rating text='all' value={props.all} />
+        <Rating text='average' value={props.average} />
+        <Rating text='positive' value={`${props.positive} %`}/>
+      </div>
+    )
+  }
 }
 
 const App = () => {
