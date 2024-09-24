@@ -1,5 +1,9 @@
 import { useState } from 'react'
 
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+
 const App = () => {
   const [persons, setPersons] = useState([
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -15,7 +19,8 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: newNumber
+      number: newNumber,
+      id: persons.length + 1
     }
 
     const duplicate = persons.find((person) => person.name === newName)
@@ -31,40 +36,19 @@ const App = () => {
 
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
-  const handleTermChange = (event) => {
-    setSearchTerm(event.target.value)
-
-
-  }
+  const handleTermChange = (event) => setSearchTerm(event.target.value)
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with <input value={searchTerm} onChange={handleTermChange}/>
-      </div>
-      <h2>add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={handleNameChange}/>
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={handleNumberChange}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <Filter searchTerm={searchTerm} handleTermChange={handleTermChange} />
+      <h3>Add a new</h3>
+      <PersonForm 
+        addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} 
+        newNumber={newNumber} handleNumberChange={handleNumberChange}
+      />
       <h2>Numbers</h2>
-      {persons.length === 0 
-        ? '...' 
-        : persons.map(person => {
-          if (person.name.includes(searchTerm) || searchTerm === '') {
-            return (
-              <div key={person.id}>{person.name} {person.number}</div>
-            )
-          }
-      })}
+      <Persons searchTerm={searchTerm} persons={persons} />
     </div>
   )
 }
