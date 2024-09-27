@@ -24,7 +24,7 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
+      id: `${persons.length + 1}`
     }
 
     const duplicate = persons.find((person) => person.name === newName)
@@ -42,6 +42,25 @@ const App = () => {
     }
   }
 
+  const removePerson = id => {
+    const personToBeDeleted = persons.find(person => person.id === id)
+    const decision = window.confirm(`Delete ${personToBeDeleted.name}`)
+
+    if (decision) {
+      phonebookService
+      .remove(id)
+      .then(removedPerson =>
+        setPersons(persons.filter(person => person.id !== removedPerson.id))
+      )
+      .catch(() => {
+        alert(
+          `the person '${personToBeDeleted.name}' was already deleted from server`
+        )
+        setPersons(persons.filter(person => person.id !== personToBeDeleted.id))
+      })
+    }
+  }
+
   const handleNameChange = (event) => setNewName(event.target.value)
   const handleNumberChange = (event) => setNewNumber(event.target.value)
   const handleTermChange = (event) => setSearchTerm(event.target.value)
@@ -56,7 +75,7 @@ const App = () => {
         newNumber={newNumber} handleNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons searchTerm={searchTerm} persons={persons} />
+      <Persons searchTerm={searchTerm} persons={persons} removePerson={removePerson} />
     </div>
   )
 }
