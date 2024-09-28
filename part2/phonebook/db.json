@@ -2,7 +2,7 @@
   "persons": [
     {
       "name": "Arto Hellas",
-      "number": "456456-2412346",
+      "number": "234-552-745",
       "id": "1"
     },
     {
@@ -29,6 +29,11 @@
       "id": "6",
       "name": "roman reigns",
       "number": "234234-234234234"
+    },
+    {
+      "id": "7",
+      "name": "Cody Rhodes",
+      "number": "1845-325-112"
     }
   ]
 }
