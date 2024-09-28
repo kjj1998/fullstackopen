@@ -30,7 +30,18 @@ const App = () => {
     const duplicate = persons.find((person) => person.name === newName)
 
     if (duplicate) {
-      alert(`${newName} is already added to phonebook`)
+      const replace = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      if (replace) {
+        phonebookService
+          .update(duplicate.id, personObject)
+          .then(returnedPerson => {
+            setPersons(
+              persons.map(person => {
+                return person.id === duplicate.id ? returnedPerson : person
+              })
+            )
+          })
+      }
     } else {
       phonebookService
         .create(personObject)
