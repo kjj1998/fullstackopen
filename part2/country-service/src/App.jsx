@@ -18,7 +18,7 @@ const App = () => {
   return (
     <>
       <SearchBar searchTerm={searchTerm} handleTermChange={handleTermChange} />
-      <Display searchTerm={searchTerm} countries={countries} />
+      <Display searchTerm={searchTerm} countries={countries} setSearchTerm={setSearchTerm} />
     </>
   )
 }

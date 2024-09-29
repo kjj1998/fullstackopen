@@ -1,22 +1,8 @@
 import { useState, useEffect } from 'react'
 import countryService from '../services/country'
+import CountryCard from './CountryCard'
 
-const CountryCard = ({ name, capital, area, languages, flag }) => {
-  return (
-    <div>
-      <h1>{name}</h1>
-      <div>capital {capital}</div>
-      <div>area {area}</div>
-      <h3>languages:</h3>
-      <ul>
-        {languages.map(language => <li key={language}>{language}</li>)}
-      </ul>
-      <img src={flag}/>
-    </div>
-  )
-}
-
-const Display = ({ searchTerm, countries }) => {
+const Display = ({ searchTerm, countries, setSearchTerm }) => {
   const [displayContent, setDisplayContent] = useState(null);
 
   useEffect(() => {
@@ -34,6 +20,10 @@ const Display = ({ searchTerm, countries }) => {
       return []  
     
     return countries.filter(country => country.toLowerCase().includes(searchTerm.toLowerCase()));
+  }
+
+  const showCountryCard = (match) => {
+    setSearchTerm(match)
   }
 
   const display = async (matches) => {
@@ -58,7 +48,15 @@ const Display = ({ searchTerm, countries }) => {
     }
     else {
       return (
-        <div>{matches.map(match => <div key={match}>{match}</div>)}</div>
+        <div>
+          {matches.map(match => {
+             return (
+              <div key={match}>
+                {match} <button onClick={() => showCountryCard(match)}>show</button>
+              </div>
+            )
+          })}
+        </div>
       )
     }
   }
