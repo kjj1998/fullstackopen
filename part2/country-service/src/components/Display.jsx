@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import countryService from '../services/country'
+import weatherService from '../services/weather'
 import CountryCard from './CountryCard'
 
 const Display = ({ searchTerm, countries, setSearchTerm }) => {
@@ -35,6 +36,12 @@ const Display = ({ searchTerm, countries, setSearchTerm }) => {
         acc.push(country.languages[key])
         return acc
       }, [])
+      const weather = await weatherService.getCurrentWeather(
+        country.capitalInfo.latlng[0], 
+        country.capitalInfo.latlng[1]
+      )
+
+      console.log(weather)
 
       return (
         <CountryCard 
@@ -43,6 +50,9 @@ const Display = ({ searchTerm, countries, setSearchTerm }) => {
           area={country.area}
           languages={languages}
           flag={country.flags.png}
+          temp={weather.main.temp}
+          icon={weather.weather[0].icon}
+          windSpeed={weather.wind.speed}
         />
       )
     }
