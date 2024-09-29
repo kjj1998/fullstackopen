@@ -26,6 +26,35 @@ let persons = [
   }
 ]
 
+const getFormattedDate = () => {
+  const options = {
+    timeZone: 'Asia/Singapore',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    weekday: 'long',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  };
+  
+  const now = new Date();
+  const formattedDate = now.toLocaleString('en-US', options) + ' GMT+0800 (Singapore Standard Time)';
+
+  return formattedDate
+}
+
+app.get('/info', (request, response) => {
+  const formattedDate = getFormattedDate()
+
+  response.send(`<div>
+    Phonebook has info for ${persons.length} people
+    <br/>
+    ${formattedDate}
+  </div>`)
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })
