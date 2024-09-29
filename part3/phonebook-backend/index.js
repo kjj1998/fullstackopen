@@ -45,6 +45,10 @@ const getFormattedDate = () => {
   return formattedDate
 }
 
+const generateId = () => {
+  return Math.floor(Math.random() * 12340230493)
+}
+
 app.get('/info', (request, response) => {
   const formattedDate = getFormattedDate()
 
@@ -75,6 +79,26 @@ app.delete('/api/persons/:id', (request, response) => {
   persons = persons.filter(person => person.id !== id)
 
   response.status(204).end()
+})
+
+app.post('/api/persons', (request, response) => {
+  const body = request.body
+
+  if (!body.name || !body.number) {
+    return response.status(400).json({
+      'error': 'name/number missing'
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id: generateId().toString()
+  }
+
+  persons = persons.concat(person)
+
+  response.json(person)
 })
 
 const PORT = 3002
