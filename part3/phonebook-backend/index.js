@@ -45,6 +45,14 @@ const getFormattedDate = () => {
   return formattedDate
 }
 
+const checkExist = (name, persons) => {
+  const exist = persons.find(person => {
+    return person.name === name 
+  })
+
+  return exist ? true : false
+}
+
 const generateId = () => {
   return Math.floor(Math.random() * 12340230493)
 }
@@ -90,12 +98,18 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
+  if (checkExist(body.name, persons)) {
+    return response.status(400).json({
+      'error': 'name must be unique'
+    })
+  }
+
   const person = {
     name: body.name,
     number: body.number,
     id: generateId().toString()
   }
-
+ 
   persons = persons.concat(person)
 
   response.json(person)
