@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
+    "build:ui": "rm -rf dist && cd ../notes/ && npm run build && cp -r dist ../notes-backend",
     "start": "node index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
