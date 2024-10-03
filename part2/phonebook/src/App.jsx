@@ -68,6 +68,7 @@ const App = () => {
           setNewNumber('')
 
           setMessage(`Added ${returnedPerson.name}`)
+          setMessageType('success')
           setTimeout(() => {
             setMessage(null)
           }, 3000);  
@@ -81,9 +82,16 @@ const App = () => {
 
     if (decision) {
       phonebookService
-      .remove(id)
-      .then(removedPerson =>
-        setPersons(persons.filter(person => person.id !== removedPerson.id))
+        .remove(id)
+        .then(removedPerson => {
+          setPersons(persons.filter(person => person.id !== removedPerson.id))
+
+          setMessage(`Removed ${removedPerson.name}`)
+          setMessageType('success')
+          setTimeout(() => {
+            setMessage(null)
+          }, 3000);
+        }
       )
       .catch(() => {
         alert(
