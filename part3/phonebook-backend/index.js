@@ -13,29 +13,6 @@ app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
-let persons = [
-  { 
-    "id": "1",
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-  },
-  { 
-    "id": "2",
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-  },
-  { 
-    "id": "3",
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-  },
-  { 
-    "id": "4",
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-  }
-]
-
 const getFormattedDate = () => {
   const options = {
     timeZone: 'Asia/Singapore',
@@ -55,44 +32,41 @@ const getFormattedDate = () => {
   return formattedDate
 }
 
-const checkExist = (name, persons) => {
-  const exist = persons.find(person => {
-    return person.name === name 
-  })
-
-  return exist ? true : false
-}
-
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.get('/info', (request, response) => {
-  const formattedDate = getFormattedDate()
-
-  response.send(`<div>
-    Phonebook has info for ${persons.length} people
-    <br/>
-    ${formattedDate}
-  </div>`)
+  Person.countDocuments({})
+    .then(count => {
+      const formattedDate = getFormattedDate()
+      response.send(`<div>
+        Phonebook has info for ${count} people
+        <br/>
+        ${formattedDate}
+      </div>`)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response) => {
   Person.find({}).then(people => {
     response.json(people)
   })
+  .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  const id = request.params.id
 
-  const person = persons.find(person => person.id === id)
-
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
+  Person.findOne({ _id: request.params.id })
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -111,12 +85,6 @@ app.post('/api/persons', (request, response, next) => {
       'error': 'name/number missing'
     })
   }
-
-  // if (checkExist(body.name, persons)) {
-  //   return response.status(400).json({
-  //     'error': 'name must be unique'
-  //   })
-  // }
 
   const person = new Person({
     name: body.name,
