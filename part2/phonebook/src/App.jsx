@@ -26,8 +26,7 @@ const App = () => {
     event.preventDefault()
     const personObject = {
       name: newName,
-      number: newNumber,
-      id: `${persons.length + 1}`
+      number: newNumber
     }
 
     const duplicate = persons.find((person) => person.name === newName)
