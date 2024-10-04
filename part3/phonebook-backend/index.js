@@ -1,10 +1,10 @@
 require('dotenv').config()
 
 const express = require('express')
-const app = express()
 const cors = require('cors')
 const morgan = require('morgan')
 const Person = require('./models/person')
+const app = express()
 
 morgan.token('body', res => JSON.stringify(res.body))
 
@@ -63,8 +63,8 @@ const checkExist = (name, persons) => {
   return exist ? true : false
 }
 
-const generateId = () => {
-  return Math.floor(Math.random() * 12340230493)
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: 'unknown endpoint' })
 }
 
 app.get('/info', (request, response) => {
@@ -128,6 +128,20 @@ app.post('/api/persons', (request, response) => {
     response.json(savedPerson)
   })
 })
+
+app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name == 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  }
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3002
 app.listen(PORT, () => {
