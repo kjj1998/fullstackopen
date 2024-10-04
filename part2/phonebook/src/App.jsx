@@ -48,10 +48,15 @@ const App = () => {
               setMessage(null)
             }, 3000);
           })
-          .catch(() => {
-            setMessage(`Information of ${duplicate.name} has already been removed from server`)
-            setMessageType('error')
-            setPersons(persons.filter(person => person.id !== duplicate.id))
+          .catch(error => {
+            if (error.status === 404) {
+              setMessage(`Information of ${duplicate.name} has already been removed from server`)
+              setMessageType('error')
+              setPersons(persons.filter(person => person.id !== duplicate.id))
+            } else {
+              setMessage(`${error.response.data.error}`)
+              setMessageType('error')
+            }
             setTimeout(() => {
               setMessage(null)
               setMessageType('')
@@ -71,6 +76,14 @@ const App = () => {
           setTimeout(() => {
             setMessage(null)
           }, 3000);  
+        })
+        .catch(error => {
+          setMessage(`${error.response.data.error}`)
+          setMessageType('error')
+          setTimeout(() => {
+            setMessage(null)
+            setMessageType('')
+          }, 3000)
         })
     }
   }
