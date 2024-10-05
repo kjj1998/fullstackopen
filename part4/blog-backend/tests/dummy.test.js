@@ -3,7 +3,6 @@ const assert = require('node:assert')
 const listHelper = require('../utils/list_helper')
 
 const listWithNoBlogs = []
-
 const listWithOneBlog = [
   {
     _id: '5a422aa71b54a676234d17f8',
@@ -14,7 +13,6 @@ const listWithOneBlog = [
     __v: 0
   }
 ]
-
 const listWithManyBlogs = [
   {
     _id: '5a422a851b54a676234d17f7',
@@ -114,6 +112,33 @@ describe('favorite blog', () => {
         title: 'Canonical string reduction',
         author: 'Edsger W. Dijkstra',
         likes: 12
+      }
+    )
+  })
+})
+
+describe('author with most blogs', () => {
+  test('of empty list is an empty object', () => {
+    const result = listHelper.mostBlogs(listWithNoBlogs)
+    assert.deepStrictEqual(result, {})
+  })
+
+  test('when list has only one blog, equals that author', () => {
+    const result = listHelper.mostBlogs(listWithOneBlog)
+    assert.deepStrictEqual(
+      result, {
+        author: 'Edsger W. Dijkstra',
+        blogs: 1
+      }
+    )
+  })
+
+  test('when list has many blogs, equals author with the most blogs', () => {
+    const result = listHelper.mostBlogs(listWithManyBlogs)
+    assert.deepStrictEqual(
+      result, {
+        author: 'Robert C. Martin',
+        blogs: 3
       }
     )
   })
