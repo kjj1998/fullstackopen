@@ -24,10 +24,10 @@ const getFormattedDate = () => {
     minute: '2-digit',
     second: '2-digit',
     hour12: false,
-  };
-  
-  const now = new Date();
-  const formattedDate = now.toLocaleString('en-US', options) + ' GMT+0800 (Singapore Standard Time)';
+  }
+
+  const now = new Date()
+  const formattedDate = now.toLocaleString('en-US', options) + ' GMT+0800 (Singapore Standard Time)'
 
   return formattedDate
 }
@@ -36,7 +36,7 @@ const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
 }
 
-app.get('/info', (request, response) => {
+app.get('/info', (request, response, next) => {
   Person.countDocuments({})
     .then(count => {
       const formattedDate = getFormattedDate()
@@ -49,14 +49,14 @@ app.get('/info', (request, response) => {
     .catch(error => next(error))
 })
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(people => {
     response.json(people)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
-app.get('/api/persons/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response, next) => {
 
   Person.findOne({ _id: request.params.id })
     .then(person => {
@@ -90,11 +90,11 @@ app.post('/api/persons', (request, response, next) => {
     name: body.name,
     number: body.number,
   })
- 
+
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-  .catch(error => next(error))
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -124,12 +124,12 @@ app.use(unknownEndpoint)
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
 
-  if (error.name == 'CastError') {
+  if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError') {
     return response.status(400).send({ error: error.message })
   } else if (error.name === 'DocumentNotFoundError') {
-    return response.status(404).send({ error: 'document not found'})
+    return response.status(404).send({ error: 'document not found' })
   }
 
   next(error)
