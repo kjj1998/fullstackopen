@@ -28,6 +28,27 @@ test('unique identifier property of blog posts is named id', async () => {
   blogs.map(blog => assert.strictEqual('id' in blog, true))
 })
 
+test('new blog post is successfully created', async () => {
+  const newBlogPost = {
+    title: 'Is Design Dead?',
+    author: 'Martin Fowler',
+    url: 'https://martinfowler.com/articles/designDead.html',
+    likes: 15,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
+
+  const titles = blogsAtEnd.map(n => n.title)
+  assert(titles.includes('Is Design Dead?'))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
