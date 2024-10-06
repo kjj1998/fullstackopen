@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('assert')
 const Blog = require('../models/blog')
 const mongoose = require('mongoose')
@@ -61,6 +61,43 @@ test('if likes property is missing, it will default to 0 after creation', async 
     .send(newBlogPost)
 
   assert.strictEqual(response.body.likes, 0)
+})
+
+describe('return error 400 Bad Request if', async () => {
+  test('title is missing from blog post', async () => {
+    const newBlogPostWithoutTitle = {
+      author: 'Martin Fowler',
+      url: 'https://martinfowler.com/articles/refactoring-dependencies.html'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlogPostWithoutTitle)
+      .expect(400)
+  })
+
+  test('url is missing from blog post', async () => {
+    const newBlogPostWithoutUrl = {
+      author: 'Martin Fowler',
+      title: 'Refactoring Dependencies'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlogPostWithoutUrl)
+      .expect(400)
+  })
+
+  test('url and title is missing from blog post', async () => {
+    const newBlogPostWithoutTitleAndUrl = {
+      author: 'Martin Fowler',
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlogPostWithoutTitleAndUrl)
+      .expect(400)
+  })
 })
 
 after(async () => {
