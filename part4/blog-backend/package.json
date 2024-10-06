@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "node --test",
     "lint": "eslint .",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test node --test"
   },
   "author": "Koh Jun Jie",
   "license": "MIT",
@@ -16,7 +16,8 @@
     "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "lodash": "^4.17.21",
-    "mongoose": "^8.7.0"
+    "mongoose": "^8.7.0",
+    "supertest": "^7.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.12.0",
