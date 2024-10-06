@@ -49,6 +49,20 @@ test('new blog post is successfully created', async () => {
   assert(titles.includes('Is Design Dead?'))
 })
 
+test('if likes property is missing, it will default to 0 after creation', async () => {
+  const newBlogPost = {
+    title: 'Testing Strategies in a Microservice Architecture',
+    author: 'Toby Clemson',
+    url: 'https://martinfowler.com/articles/microservice-testing/'
+  }
+
+  const response = await api
+    .post('/api/blogs')
+    .send(newBlogPost)
+
+  assert.strictEqual(response.body.likes, 0)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
