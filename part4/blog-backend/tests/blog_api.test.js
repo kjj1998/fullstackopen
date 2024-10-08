@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
+// const blog = require('../models/blog')
 
 const api = supertest(app)
 
@@ -109,6 +110,16 @@ test('existing blog is successfully deleted', async () => {
   const blogsAtEnd = await helper.blogsInDb()
 
   assert.strictEqual(blogsAtEnd.length, blogsAtStart.length - 1)
+})
+
+test('existing blog can be successfully updated', async () => {
+  const existingBlogs = await helper.blogsInDb()
+  const blogToUpdate = existingBlogs[0]
+  blogToUpdate.title = 'Updated title'
+
+  const response = await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate).expect(202)
+
+  assert.strictEqual(response.body.title, 'Updated title')
 })
 
 after(async () => {
