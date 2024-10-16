@@ -1,21 +1,38 @@
 const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('assert')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const helper = require('./test_helper')
+const saltRounds = 10
+const bcrypt = require('bcrypt')
 
 const api = supertest(app)
 
 describe('when there are initially some blogs in the database', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
+
+    const userObjects = await Promise.all(
+      helper.initialUsers
+        .map(async user => new User({
+          username: user.username,
+          name: user.name,
+          passwordHash: await bcrypt.hash(user.password, saltRounds)
+        }))
+    )
+    const usersPromiseArray = userObjects.map(user => user.save())
+    await Promise.all(usersPromiseArray)
+
+    const user = await User.findOne()
 
     const blogObjects = helper.initialBlogs
-      .map(blog => new Blog(blog))
-    const promiseArray = blogObjects.map(blog => blog.save())
-    await Promise.all(promiseArray)
+      .map(blog => new Blog({ ...blog, user: user._id.toString() }))
+    const blogsPromiseArray = blogObjects.map(blog => blog.save())
+    await Promise.all(blogsPromiseArray)
   })
 
   test('blogs are returned as json', async () => {
@@ -40,8 +57,15 @@ describe('when there are initially some blogs in the database', () => {
         likes: 15,
       }
 
+      const firstUser = helper.initialUsers[0]
+      const response = await api
+        .post('/api/login')
+        .send({ username: firstUser.username, password: firstUser.password })
+      const body = await response.body
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${body.token}`)
         .send(newBlogPost)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -60,11 +84,31 @@ describe('when there are initially some blogs in the database', () => {
         url: 'https://martinfowler.com/articles/microservice-testing/'
       }
 
+      const firstUser = helper.initialUsers[0]
+      const authResponse = await api
+        .post('/api/login')
+        .send({ username: firstUser.username, password: firstUser.password })
+      const authBody = await authResponse.body
+
       const response = await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${authBody.token}`)
         .send(newBlogPost)
 
       assert.strictEqual(response.body.likes, 0)
+    })
+
+    test('fails when token is not proviced', async () => {
+      const newBlogPost = {
+        title: 'Testing Strategies in a Microservice Architecture',
+        author: 'Toby Clemson',
+        url: 'https://martinfowler.com/articles/microservice-testing/'
+      }
+
+      await api
+        .post('/api/blogs')
+        .send(newBlogPost)
+        .expect(401)
     })
   })
 
@@ -75,8 +119,15 @@ describe('when there are initially some blogs in the database', () => {
         url: 'https://martinfowler.com/articles/refactoring-dependencies.html'
       }
 
+      const firstUser = helper.initialUsers[0]
+      const authResponse = await api
+        .post('/api/login')
+        .send({ username: firstUser.username, password: firstUser.password })
+      const authBody = await authResponse.body
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${authBody.token}`)
         .send(newBlogPostWithoutTitle)
         .expect(400)
     })
@@ -87,8 +138,15 @@ describe('when there are initially some blogs in the database', () => {
         title: 'Refactoring Dependencies'
       }
 
+      const firstUser = helper.initialUsers[0]
+      const authResponse = await api
+        .post('/api/login')
+        .send({ username: firstUser.username, password: firstUser.password })
+      const authBody = await authResponse.body
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${authBody.token}`)
         .send(newBlogPostWithoutUrl)
         .expect(400)
     })
@@ -98,8 +156,15 @@ describe('when there are initially some blogs in the database', () => {
         author: 'Martin Fowler',
       }
 
+      const firstUser = helper.initialUsers[0]
+      const authResponse = await api
+        .post('/api/login')
+        .send({ username: firstUser.username, password: firstUser.password })
+      const authBody = await authResponse.body
+
       await api
         .post('/api/blogs')
+        .set('Authorization', `Bearer ${authBody.token}`)
         .send(newBlogPostWithoutTitleAndUrl)
         .expect(400)
     })
@@ -109,7 +174,16 @@ describe('when there are initially some blogs in the database', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToDelete = blogsAtStart[0]
 
-    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+    const firstUser = helper.initialUsers[0]
+    const authResponse = await api
+      .post('/api/login')
+      .send({ username: firstUser.username, password: firstUser.password })
+    const authBody = await authResponse.body
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('Authorization', `Bearer ${authBody.token}`)
+      .expect(204)
 
     const blogsAtEnd = await helper.blogsInDb()
 
@@ -119,9 +193,20 @@ describe('when there are initially some blogs in the database', () => {
   test('existing blog can be successfully updated', async () => {
     const existingBlogs = await helper.blogsInDb()
     const blogToUpdate = existingBlogs[0]
+
+    const firstUser = helper.initialUsers[0]
+    const authResponse = await api
+      .post('/api/login')
+      .send({ username: firstUser.username, password: firstUser.password })
+    const authBody = await authResponse.body
+
     blogToUpdate.title = 'Updated title'
 
-    const response = await api.put(`/api/blogs/${blogToUpdate.id}`).send(blogToUpdate).expect(202)
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .set('Authorization', `Bearer ${authBody.token}`)
+      .send(blogToUpdate)
+      .expect(202)
 
     assert.strictEqual(response.body.title, 'Updated title')
   })
