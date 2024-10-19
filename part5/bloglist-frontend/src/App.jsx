@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Notification from './components/Notification'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -11,6 +12,8 @@ const App = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
+  const [message, setMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -37,17 +40,44 @@ const App = () => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
       setUsername('')
       setPassword('')
+
+      setMessage(`logged in as ${user.name}`)
+      setMessageType('success')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 3000)
     } catch (exception) {
-      console.log('Wrong Credentials')
+      setMessage('Wrong credentials')
+      setMessageType('error')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 3000)
     }
   }
 
   const handleLogout = (event) => {
     event.preventDefault()
+    try {
+      setUser(null)
+      blogService.removeToken()
+      window.localStorage.removeItem('loggedBlogAppUser')
 
-    setUser(null)
-    blogService.removeToken()
-    window.localStorage.removeItem('loggedBlogAppUser')
+      setMessage(`Logged out`)
+      setMessageType('success')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 3000)
+    } catch (exception) {
+      setMessage('Something went wrong')
+      setMessageType('error')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 3000)
+    }
   }
 
   const loginForm = () => {
@@ -73,8 +103,20 @@ const App = () => {
       setAuthor('')
       setUrl('')
       setBlogs(blogs.concat(savedBlog))
+
+      setMessage(`a new blog ${title} by ${author} added`)
+      setMessageType('success')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 3000)
     } catch (exception) {
-      console.log(exception)
+      setMessage('error when adding blog')
+      setMessageType('error')
+      setTimeout(() => {
+        setMessage(null)
+        setMessageType(null)
+      }, 3000)
     }
   }
 
@@ -82,6 +124,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
+        <Notification message={message} type={messageType} />
         {loginForm()}
       </div>
     )
@@ -90,17 +133,28 @@ const App = () => {
   return (
     <div>
       <h2>blogs</h2>
-      <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-      <h2>create new</h2>
-      <form onSubmit={handleCreateBlog}>
-        <div>title:<input type='text' value={title} name='Title' onChange={({ target }) => setTitle(target.value)}/></div>
-        <div>author:<input type='text' value={author} name='Author' onChange={({ target }) => setAuthor(target.value)}/></div>
-        <div>url:<input type='text' value={url} name='Url' onChange={({ target }) => setUrl(target.value)}/></div>
-        <button type='submit'>create</button>
-      </form>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <Notification message={message} type={messageType} />
+
+      {user === null ? 
+        <div>
+          <h2>log in to application</h2>
+          {loginForm()}
+        </div>
+        :
+        <div>
+          <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
+          <h2>create new</h2>
+          <form onSubmit={handleCreateBlog}>
+            <div>title:<input type='text' value={title} name='Title' onChange={({ target }) => setTitle(target.value)}/></div>
+            <div>author:<input type='text' value={author} name='Author' onChange={({ target }) => setAuthor(target.value)}/></div>
+            <div>url:<input type='text' value={url} name='Url' onChange={({ target }) => setUrl(target.value)}/></div>
+            <button type='submit'>create</button>
+          </form>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}   
+        </div>
+      }
     </div>
   )
 }
