@@ -13,9 +13,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
   const blogFormRef = useRef()
@@ -99,22 +96,18 @@ const App = () => {
     )
   }
 
-  const handleCreateBlog = async (event) => {
-    event.preventDefault()
-
+  const createBlog = async (blogObject) => {
     try {
-      const savedBlog = await blogService.post({ title, author, url })
-      setTitle('')
-      setAuthor('')
-      setUrl('')
+      const savedBlog = await blogService.post(blogObject)
       setBlogs(blogs.concat(savedBlog))
 
-      setMessage(`a new blog ${title} by ${author} added`)
+      setMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
       setMessageType('success')
       setTimeout(() => {
         setMessage(null)
         setMessageType(null)
       }, 3000)
+
       blogFormRef.current.toggleVisibility()
     } catch (exception) {
       setMessage('error when adding blog')
@@ -150,15 +143,7 @@ const App = () => {
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
           <Togglable buttonLabel='new blog post' ref={blogFormRef}>
-            <BlogForm
-              handleCreateBlog={handleCreateBlog}
-              title={title}
-              author={author}
-              url={url}
-              setTitle={setTitle}
-              setUrl={setUrl}
-              setAuthor={setAuthor}
-            />
+            <BlogForm createBlog={createBlog}/>
           </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
