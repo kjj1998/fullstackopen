@@ -1,8 +1,12 @@
-import { useState, useEffect } from 'react'
-import Blog from './components/Blog'
+import { useState, useEffect, useRef } from 'react'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
+
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import BlogForm from './components/BlogForm'
+import Blog from './components/Blog'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -14,6 +18,7 @@ const App = () => {
   const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
   const [messageType, setMessageType] = useState(null)
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -110,6 +115,7 @@ const App = () => {
         setMessage(null)
         setMessageType(null)
       }, 3000)
+      blogFormRef.current.toggleVisibility()
     } catch (exception) {
       setMessage('error when adding blog')
       setMessageType('error')
@@ -143,13 +149,17 @@ const App = () => {
         :
         <div>
           <p>{user.name} logged in <button onClick={handleLogout}>logout</button></p>
-          <h2>create new</h2>
-          <form onSubmit={handleCreateBlog}>
-            <div>title:<input type='text' value={title} name='Title' onChange={({ target }) => setTitle(target.value)}/></div>
-            <div>author:<input type='text' value={author} name='Author' onChange={({ target }) => setAuthor(target.value)}/></div>
-            <div>url:<input type='text' value={url} name='Url' onChange={({ target }) => setUrl(target.value)}/></div>
-            <button type='submit'>create</button>
-          </form>
+          <Togglable buttonLabel='new blog post' ref={blogFormRef}>
+            <BlogForm
+              handleCreateBlog={handleCreateBlog}
+              title={title}
+              author={author}
+              url={url}
+              setTitle={setTitle}
+              setUrl={setUrl}
+              setAuthor={setAuthor}
+            />
+          </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}   
