@@ -85,7 +85,7 @@ const App = () => {
       window.localStorage.setItem('loggedNoteAppUser', JSON.stringify(user))
       noteService.setToken(user.token)
       setUser(user)
-      
+
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
@@ -104,10 +104,10 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
-      
+
       <Notification message={errorMessage} />
 
-      {user === null ? 
+      {user === null ?
         <Togglable buttonLabel='login'>
           <LoginForm login={login} />
         </Togglable>
@@ -124,17 +124,17 @@ const App = () => {
         <button onClick={() => setShowAll(!showAll)}>
           show {showAll ? 'important' : 'all' }
         </button>
-      </div>      
+      </div>
       <ul>
-        {notesToShow.map(note => 
-          <Note 
-            key={note.id} 
+        {notesToShow.map(note =>
+          <Note
+            key={note.id}
             note={note}
             toggleImportance={() => toggleImportanceOf(note.id)}
           />
         )}
       </ul>
-      
+
       <Footer />
     </div>
   )
