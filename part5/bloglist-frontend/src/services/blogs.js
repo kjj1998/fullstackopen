@@ -33,4 +33,13 @@ const put = async (blog) => {
   const response = await axios.put(putUrl, blog, config)
 }
 
-export default { getAll, post, setToken, removeToken, put }
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token }
+  }
+  const deleteUrl = `${baseUrl}/${id}`
+
+  const response = await axios.delete(deleteUrl, config)
+}
+
+export default { getAll, post, setToken, removeToken, put, remove }

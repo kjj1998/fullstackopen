@@ -129,6 +129,9 @@ const App = () => {
     )
   }
 
+  console.log(user)
+  console.log(blogs)
+
   return (
     <div>
       <h2>blogs</h2>
@@ -148,7 +151,7 @@ const App = () => {
           {
             blogs
               .sort((a, b) => { return b.likes - a.likes })
-              .map(blog => <Blog key={blog.id} blog={blog} />)
+              .map(blog => <Blog key={blog.id} blog={blog} setBlogs={setBlogs} blogs={blogs} loggedInUser={user.username}/>)
           } 
         </div>
       }
