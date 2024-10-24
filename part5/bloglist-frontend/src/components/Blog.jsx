@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 import blogService from '../services/blogs'
 
 const Blog = ({ blog, setBlogs, blogs, loggedInUser }) => {
@@ -12,7 +12,6 @@ const Blog = ({ blog, setBlogs, blogs, loggedInUser }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
   const toggleDisplay = () => {
     setDisplay(!display)
   }
@@ -45,9 +44,7 @@ const Blog = ({ blog, setBlogs, blogs, loggedInUser }) => {
           <div>{blog.url}</div>
           <div>likes {likes} <button onClick={handleLike}>like</button></div>
           <div>{blog.user.name}</div>
-          {blog.user.username === loggedInUser && 
-            <div><button onClick={handleDelete}>remove</button></div>
-          }
+          {blog.user.username === loggedInUser && <div><button onClick={handleDelete}>remove</button></div>}
         </div>
       )
     }
@@ -57,7 +54,7 @@ const Blog = ({ blog, setBlogs, blogs, loggedInUser }) => {
     <div style={blogStyle}>
       {blog.title} {blog.author} <button onClick={toggleDisplay}>{display ? 'hide' : 'view'}</button>
       {displayAllDetails()}
-    </div>  
+    </div>
   )
 }
 

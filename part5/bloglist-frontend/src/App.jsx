@@ -18,9 +18,7 @@ const App = () => {
   const blogFormRef = useRef()
 
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    blogService.getAll().then(blogs => setBlogs(blogs))
   }, [])
 
   useEffect(() => {
@@ -66,7 +64,7 @@ const App = () => {
       blogService.removeToken()
       window.localStorage.removeItem('loggedBlogAppUser')
 
-      setMessage(`Logged out`)
+      setMessage('Logged out')
       setMessageType('success')
       setTimeout(() => {
         setMessage(null)
@@ -137,7 +135,7 @@ const App = () => {
       <h2>blogs</h2>
       <Notification message={message} type={messageType} />
 
-      {user === null ? 
+      {user === null ?
         <div>
           <h2>log in to application</h2>
           {loginForm()}
@@ -152,9 +150,8 @@ const App = () => {
             blogs
               .sort((a, b) => { return b.likes - a.likes })
               .map(blog => <Blog key={blog.id} blog={blog} setBlogs={setBlogs} blogs={blogs} loggedInUser={user.username}/>)
-          } 
-        </div>
-      }
+          }
+        </div>}
     </div>
   )
 }
