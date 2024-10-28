@@ -29,34 +29,34 @@ vi.mock('../services/blogs', () => {
 })
 blogService.put.mockResolvedValue({})
 
-// test('renders content', () => {
-//   const { container } = render(<Blog blog={blog} blogs={blogs} setBlogs={mockSetBlogs} loggedInUser={loggedInUser}/>)
+test('renders content', () => {
+  const { container } = render(<Blog blog={blog} blogs={blogs} setBlogs={mockSetBlogs} loggedInUser={loggedInUser}/>)
 
-//   const element = container.querySelector('#blog')
+  const element = container.querySelector('#blog')
 
-//   expect(element).toBeDefined()
-// })
+  expect(element).toBeDefined()
+})
 
-// test('renders the blog\'s title and author, but does not render its URL or number of likes by default', () => {
-//   const { container } = render(<Blog blog={blog} blogs={blogs} setBlogs={mockSetBlogs} loggedInUser={loggedInUser}/>)
-//   const element = container.querySelector('#blog')
+test('renders the blog\'s title and author, but does not render its URL or number of likes by default', () => {
+  const { container } = render(<Blog blog={blog} blogs={blogs} setBlogs={mockSetBlogs} loggedInUser={loggedInUser}/>)
+  const element = container.querySelector('#blog')
 
-//   expect(element).toHaveTextContent(`${blog.title} ${blog.author}`)
-//   expect(element).not.toHaveTextContent(`${blog.url}`)
-//   expect(element).not.toHaveTextContent(`${blog.likes}`)
-// })
+  expect(element).toHaveTextContent(`${blog.title} ${blog.author}`)
+  expect(element).not.toHaveTextContent(`${blog.url}`)
+  expect(element).not.toHaveTextContent(`${blog.likes}`)
+})
 
-// test('renders the blog\'s URL and number of likes when the view button is clicked', async () => {
-//   const { container } = render(<Blog blog={blog} blogs={blogs} setBlogs={mockSetBlogs} loggedInUser={loggedInUser}/>)
-//   const element = container.querySelector('#blog')
+test('renders the blog\'s URL and number of likes when the view button is clicked', async () => {
+  const { container } = render(<Blog blog={blog} blogs={blogs} setBlogs={mockSetBlogs} loggedInUser={loggedInUser}/>)
+  const element = container.querySelector('#blog')
 
-//   const user = userEvent.setup()
-//   const button = screen.getByText('view')
-//   await user.click(button)
+  const user = userEvent.setup()
+  const button = screen.getByText('view')
+  await user.click(button)
 
-//   expect(element).toHaveTextContent(`${blog.url}`)
-//   expect(element).toHaveTextContent(`${blog.likes}`)
-// })
+  expect(element).toHaveTextContent(`${blog.url}`)
+  expect(element).toHaveTextContent(`${blog.likes}`)
+})
 
 test('when the like button is clicked twice, the event handler is called twice', async () => {
 
