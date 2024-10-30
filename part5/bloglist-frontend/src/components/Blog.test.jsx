@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import Blog from './Blog'
 import { vi } from 'vitest'
 import blogService from '../services/blogs'
-// import blogService from '../services/blogs'
 
 const blog = {
   title: 'You’re NOT gonna need it!',
