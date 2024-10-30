@@ -101,6 +101,7 @@ const App = () => {
     noteService.removeToken()
   }
 
+  console.log(user)
   return (
     <div>
       <h1>Notes</h1>
@@ -108,12 +109,12 @@ const App = () => {
       <Notification message={errorMessage} />
 
       {user === null ?
-        <Togglable buttonLabel='login'>
+        <Togglable buttonLabel='log in'>
           <LoginForm login={login} />
         </Togglable>
         :
         <div>
-          <p>{user.name} logged-in <button onClick={handleLogout}>Logout</button></p>
+          <p>{user.username} logged in <button onClick={handleLogout}>Logout</button></p>
           <Togglable buttonLabel='new note' ref={noteFormRef}>
             <NoteForm createNote={createNote} />
           </Togglable>
