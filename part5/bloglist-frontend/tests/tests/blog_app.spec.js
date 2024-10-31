@@ -37,4 +37,24 @@ describe('Blog app', () => {
       await expect(page.getByText('Wrong credentials')).toBeVisible()
     })
   })
+
+  describe('When logged in', () => {
+    beforeEach(async ({ page }) => {
+      await page.getByTestId('username').fill('hellas')
+      await page.getByTestId('password').fill('secret')
+      await page.getByRole('button', { name: 'login' }).click()
+
+      await expect(page.getByText('logged in as Artos Hellas')).toBeVisible()
+    })
+
+    test('a new blog can be created', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog post' }).click()
+      await page.getByPlaceholder('write title here').fill('How Discord Reduced Websocket Traffic by 40%')
+      await page.getByPlaceholder('write author here').fill('Austin Whyte')
+      await page.getByPlaceholder('write url here').fill('https://discord.com/blog/how-discord-reduced-websocket-traffic-by-40-percent#heading-3')
+
+      await page.getByRole('button', { name: 'create' }).click()
+      await expect(page.getByText('How Discord Reduced Websocket Traffic by 40% Austin Whyte')).toBeVisible()
+    })
+  })
 })
