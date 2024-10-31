@@ -69,5 +69,20 @@ describe('Blog app', () => {
 
       await expect(page.getByText('likes 1')).toBeVisible()
     })
+
+    test('a blog can be deleted', async ({ page }) => {
+      await page.getByRole('button', { name: 'new blog post' }).click()
+      await page.getByPlaceholder('write title here').fill('How Discord Reduced Websocket Traffic by 40%')
+      await page.getByPlaceholder('write author here').fill('Austin Whyte')
+      await page.getByPlaceholder('write url here').fill('https://discord.com/blog/how-discord-reduced-websocket-traffic-by-40-percent#heading-3')
+
+      await page.getByRole('button', { name: 'create' }).click()
+      await page.getByRole('button', { name: 'view' }).click()
+
+      page.on('dialog', dialog => dialog.accept())
+      await page.getByRole('button', { name: 'remove' }).click()
+
+      await expect(page.getByText('How Discord Reduced Websocket Traffic by 40% Austin Whyte')).not.toBeVisible()
+    })
   })
 })
