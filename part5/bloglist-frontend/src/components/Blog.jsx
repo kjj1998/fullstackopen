@@ -42,7 +42,7 @@ const Blog = ({ blog, setBlogs, blogs, loggedInUser }) => {
       return (
         <div>
           <div>{blog.url}</div>
-          <div>likes {likes} <button onClick={handleLike}>like</button></div>
+          <div>likes {likes} <button data-testid='like' onClick={handleLike}>like</button></div>
           <div>{blog.user.name}</div>
           {blog.user.username === loggedInUser && <div><button onClick={handleDelete}>remove</button></div>}
         </div>
@@ -51,8 +51,8 @@ const Blog = ({ blog, setBlogs, blogs, loggedInUser }) => {
   }
 
   return (
-    <div style={blogStyle} id='blog'>
-      {blog.title} {blog.author} <button onClick={toggleDisplay}>{display ? 'hide' : 'view'}</button>
+    <div className='blog' style={blogStyle} id='blog'>
+      {blog.title} {blog.author} <button data-testid='toggle' onClick={toggleDisplay}>{display ? 'hide' : 'view'}</button>
       {displayAllDetails()}
     </div>
   )

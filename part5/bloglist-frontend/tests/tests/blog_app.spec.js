@@ -102,5 +102,45 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'view' }).click()
       await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
     })
+
+    test('tests are arranged in order according to their likes, with the most likes first', async ({ page }) => {
+      await createBlog(
+        page,
+        'How to Measure Design System at Scale',
+        'Vietanh Nguyen',
+        'https://www.uber.com/en-SG/blog/design-system-at-scale/?uclick_id=6bac30ae-d9b5-44dc-a1f2-716de79933e7'
+      )
+      await createBlog(
+        page,
+        'How Airbnb Smoothly Upgrades React',
+        'Andre Wiggins',
+        'https://medium.com/airbnb-engineering/how-airbnb-smoothly-upgrades-react-b1d772a565fd'
+      )
+      await createBlog(
+        page,
+        'How Discord Reduced Websocket Traffic by 40%',
+        'Austin Whyte',
+        'https://discord.com/blog/how-discord-reduced-websocket-traffic-by-40-percent#heading-3'
+      )
+
+      const blog1 = page.locator('.blog').filter({ hasText: 'How to Measure Design System at Scale Vietanh Nguyen' })
+      const blog2 = page.locator('.blog').filter({ hasText: 'How Airbnb Smoothly Upgrades React Andre Wiggins' })
+      const blog3 = page.locator('.blog').filter({ hasText: 'How Discord Reduced Websocket Traffic by 40% Austin Whyte' })
+
+      await blog1.getByRole('button', { name: 'view' }).click()
+      await blog2.getByRole('button', { name: 'view' }).click()
+      await blog3.getByRole('button', { name: 'view' }).click()
+
+      await blog3.getByRole('button', { name: 'like' }).click()
+      await page.waitForLoadState('networkidle')
+      await blog3.getByRole('button', { name: 'like' }).click()
+      await page.waitForLoadState('networkidle')
+      await blog2.getByRole('button', { name: 'like' }).click()
+      await page.waitForLoadState('networkidle')
+
+      await expect(blog3).toContainText('likes 2')
+      await expect(blog2).toContainText('likes 1')
+      await expect(blog1).toContainText('likes 0')
+    })
   })
 })
