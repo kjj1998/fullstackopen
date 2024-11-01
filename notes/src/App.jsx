@@ -101,7 +101,6 @@ const App = () => {
     noteService.removeToken()
   }
 
-  console.log(user)
   return (
     <div>
       <h1>Notes</h1>
