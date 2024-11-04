@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleImportanceOf } from '../reducers/noteReducer'
 import PropTypes from 'prop-types'
+import noteService from '../services/notes'
 
 const Note = ({ note, handleClick }) => {
   return(
@@ -28,9 +29,10 @@ const Notes = () => {
         <Note
           key={note.id}
           note={note}
-          handleClick={() => 
-            dispatch(toggleImportanceOf(note.id))
-          }
+          handleClick={async () => {
+            const changedNote = await noteService.toggleImportance(note)
+            dispatch(toggleImportanceOf(changedNote))
+          }}
         />
       )}
     </ul>
