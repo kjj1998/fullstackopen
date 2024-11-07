@@ -26,12 +26,31 @@ const anecdoteSlice = createSlice({
   }
 })
 
+const getId = () => (100000 * Math.random()).toFixed(0)
+
+const asObject = (anecdote) => {
+  return {
+    content: anecdote,
+    id: getId(),
+    votes: 0
+  }
+}
+
 export const { createAnecdote, voteAnecdote, setAnecdotes } = anecdoteSlice.actions
 
 export const initializeAnecdotes = () => {
   return async dispatch => {
     const anecdotes = await anecdoteService.getAll()
     dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const newAnecdote = (content) => {
+  return async dispatch => {
+    const newAnecdote = asObject(content)
+    await anecdoteService.create(newAnecdote)
+
+    dispatch(createAnecdote(newAnecdote))
   }
 }
 
