@@ -2,30 +2,6 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import anecdoteService from '../services/anecdotes'
 
-const anecdoteSlice = createSlice({
-  name: 'anecdotes',
-  initialState: [],
-  reducers: {
-    createAnecdote(state, action) {
-      const newAnecdote = action.payload
-      return state.concat(newAnecdote)
-    },
-    voteAnecdote(state, action) {
-      const id = action.payload
-      const anecdoteToChange = state.find(a => a.id === id)
-      const changedAnecdote = {
-        ...anecdoteToChange,
-        votes: anecdoteToChange.votes + 1
-      }
-
-      return state.map(anecdote => anecdote.id !== changedAnecdote.id ? anecdote : changedAnecdote)
-    },
-    setAnecdotes(state, action) {
-      return action.payload
-    }
-  }
-})
-
 const getId = () => (100000 * Math.random()).toFixed(0)
 
 const asObject = (anecdote) => {
@@ -36,7 +12,24 @@ const asObject = (anecdote) => {
   }
 }
 
-export const { createAnecdote, voteAnecdote, setAnecdotes } = anecdoteSlice.actions
+const anecdoteSlice = createSlice({
+  name: 'anecdotes',
+  initialState: [],
+  reducers: {
+    createAnecdote(state, action) {
+      const newAnecdote = action.payload
+      return state.concat(newAnecdote)
+    },
+    voteAnecdote(state, action) {
+      const votedAnecdote = action.payload
+
+      return state.map(anecdote => anecdote.id !== votedAnecdote.id ? anecdote : votedAnecdote)
+    },
+    setAnecdotes(state, action) {
+      return action.payload
+    }
+  }
+})
 
 export const initializeAnecdotes = () => {
   return async dispatch => {
@@ -54,4 +47,16 @@ export const newAnecdote = (content) => {
   }
 }
 
+export const voteForAnecdote = (anecdote) => {
+  return async dispatch => {
+    const votedAnecdote = {
+      ...anecdote,
+      votes: anecdote.votes + 1
+    }
+    await anecdoteService.update(votedAnecdote)
+    dispatch(voteAnecdote(votedAnecdote))
+  }
+}
+
+export const { createAnecdote, voteAnecdote, setAnecdotes } = anecdoteSlice.actions
 export default anecdoteSlice.reducer
