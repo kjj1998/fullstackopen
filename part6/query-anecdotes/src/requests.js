@@ -8,6 +8,10 @@ export const getAnecdotes = async () => {
 }
 
 export const createAnecdote = async (anecdote) => {
+  if (anecdote.content.length < 5) {
+    throw axios.AxiosError.ERR_BAD_REQUEST
+  }
+
   const res = await axios.post(baseUrl, anecdote)
   return res.data
 }
