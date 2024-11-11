@@ -8,14 +8,38 @@ interface Result {
   average: number
 }
 
+interface ExerciseValues {
+  trainings: number[],
+  target: number
+}
+
 const ratingDescriptions = [
   'you need to buck up',
   'not too bad but could be better',
   'way to go!'
 ];
 
-const calculateExercises = (trainings: number[], target: number): Result => {
+export const parseArguments = (args: string[]): ExerciseValues => {
+  if (args.length < 4) {
+    throw new Error('Too little arguments');
+  }
 
+  args.slice(2).forEach(arg => {
+    if (isNaN(Number(arg))) {
+      throw new Error('Provided values were not numbers');
+    }
+  })
+
+  const trainings = args.slice(2, args.length - 1).map(arg => Number(arg));
+  const target = Number(args[args.length - 1]);
+
+  return {
+    trainings,
+    target
+  };
+}
+
+const calculateExercises = (trainings: number[], target: number): Result => {
   const totalHoursSpentTraining = trainings.reduce(
     (accumulator, currentValue) => accumulator + currentValue, 0
   );
@@ -47,4 +71,13 @@ const calculateExercises = (trainings: number[], target: number): Result => {
   };
 }
 
-console.log(calculateExercises([4, 0, 2, 3.5, 0, 5, 1], 2));
+try {
+  const { trainings, target } = parseArguments(process.argv);
+  console.log(calculateExercises(trainings, target));
+} catch (error: unknown) {
+  let errorMessage = 'Something bad happened.';
+  if (error instanceof Error) {
+    errorMessage += ' Error: ' + error.message;
+  }
+  console.log(errorMessage);
+}
