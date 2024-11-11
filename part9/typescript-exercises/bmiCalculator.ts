@@ -33,8 +33,8 @@ const calculateBmi = (height: number, weight: number): string => {
     return 'Normal range'
   else if (bmi >= 25 && bmi < 30)
     return 'Overweight range'
-  else if (bmi > 30)
-    return 'Obese range'
+  
+  return 'Obese range'
 }
 
 try {
