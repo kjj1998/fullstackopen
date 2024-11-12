@@ -1,21 +1,25 @@
 import express from 'express';
 import { Express, Request, Response } from 'express';
 import calculateBmi from './bmiCalculator';
+import qs from 'qs';
 
-interface bmiInformationRequest extends Request {
-  query: {
-    height: string,
-    weight: string
-  }
-};
+// interface bmiInformationRequest extends Request {
+//   query: {
+//     height: string,
+//     weight: string
+//   }
+// };
 
 const app: Express = express();
+
+app.set('query parser',
+  (str: string) => qs.parse(str))
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
 });
 
-app.get('/bmi', (req: bmiInformationRequest, res: Response) => {
+app.get('/bmi', (req: Request, res: Response) => {
   if (!req.query.height || !req.query.weight) {
     res.status(400).json({ error: 'Missing query parameters' });
     return;
