@@ -28,7 +28,7 @@ export const parseArguments = (args: string[]): ExerciseValues => {
     if (isNaN(Number(arg))) {
       throw new Error('Provided values were not numbers');
     }
-  })
+  });
 
   const trainings = args.slice(2, args.length - 1).map(arg => Number(arg));
   const target = Number(args[args.length - 1]);
@@ -37,7 +37,7 @@ export const parseArguments = (args: string[]): ExerciseValues => {
     trainings,
     target
   };
-}
+};
 
 const calculateExercises = (trainings: number[], target: number): Result => {
   const totalHoursSpentTraining = trainings.reduce(
@@ -69,7 +69,7 @@ const calculateExercises = (trainings: number[], target: number): Result => {
     target: target,
     average: averageTrainingHours
   };
-}
+};
 
 try {
   const { trainings, target } = parseArguments(process.argv);

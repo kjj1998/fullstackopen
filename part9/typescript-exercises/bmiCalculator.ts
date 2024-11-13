@@ -18,7 +18,7 @@ export const parseArguments = (args: string[]): BmiValues => {
   } else {
     throw new Error('Provided values were not numbers');
   }
-}
+};
 
 const calculateBmi = (height: number, weight: number): string => {
   if (height < 0 || weight < 0)
@@ -35,7 +35,7 @@ const calculateBmi = (height: number, weight: number): string => {
     return 'Overweight range';
   
   return 'Obese range';
-}
+};
 
 if (require.main === module) {
   try {

@@ -13,7 +13,7 @@ import qs from 'qs';
 const app: Express = express();
 
 app.set('query parser',
-  (str: string) => qs.parse(str))
+  (str: string) => qs.parse(str));
 
 app.get('/hello', (_req, res) => {
   res.send('Hello Full Stack!');
