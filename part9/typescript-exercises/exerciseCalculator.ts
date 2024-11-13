@@ -71,13 +71,17 @@ const calculateExercises = (trainings: number[], target: number): Result => {
   };
 };
 
-try {
-  const { trainings, target } = parseArguments(process.argv);
-  console.log(calculateExercises(trainings, target));
-} catch (error: unknown) {
-  let errorMessage = 'Something bad happened.';
-  if (error instanceof Error) {
-    errorMessage += ' Error: ' + error.message;
+if (require.main === module) {
+  try {
+    const { trainings, target } = parseArguments(process.argv);
+    console.log(calculateExercises(trainings, target));
+  } catch (error: unknown) {
+    let errorMessage = 'Something bad happened.';
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    console.log(errorMessage);
   }
-  console.log(errorMessage);
 }
+
+export default calculateExercises;
