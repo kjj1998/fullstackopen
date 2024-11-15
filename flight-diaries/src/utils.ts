@@ -49,7 +49,7 @@ const parseVisibility = (visibility: unknown): Visibility => {
 };
 
 const toNewDiaryEntry = (object: unknown): NewDiaryEntry => {
-  if ( !object || typeof object !== 'object' ) {
+  if ( !object || typeof object !== 'object') {
     throw new Error('Incorrect or missing data');
   }
 
