@@ -16,13 +16,10 @@ export enum Weather {
   Windy = 'windy',
 }
 
-export interface DiaryEntry {
-  id: number;
-  date: string;
-  weather: Weather;
-  visibility: Visibility;
-  comment?: string;
-}
-
-export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
 export type NewDiaryEntry = z.infer<typeof newEntrySchema>;
+export interface DiaryEntry extends NewDiaryEntry {
+  id: number;
+}
+export interface NonSensitiveDiaryEntry extends Omit<NewDiaryEntry, 'comment'> {
+  id: number;
+}
