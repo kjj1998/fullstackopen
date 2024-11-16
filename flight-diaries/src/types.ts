@@ -1,3 +1,6 @@
+import { z } from 'zod';
+import { newEntrySchema } from './utils';
+
 export enum Visibility {
   Great = 'great',
   Good = 'good',
@@ -22,4 +25,4 @@ export interface DiaryEntry {
 }
 
 export type NonSensitiveDiaryEntry = Omit<DiaryEntry, 'comment'>;
-export type NewDiaryEntry = Omit<DiaryEntry, 'id'>;
+export type NewDiaryEntry = z.infer<typeof newEntrySchema>;

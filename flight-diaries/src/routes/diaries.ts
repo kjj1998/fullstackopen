@@ -1,23 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import express from 'express';
+import express, { Response, Request, NextFunction } from 'express';
 import diaryService from '../services/diaryService';
+import { newEntrySchema } from '../utils';
+
+import { z } from 'zod';
+import { NewDiaryEntry, DiaryEntry } from '../types';
 
 const router = express.Router();
 
 router.get('/', (_req, res) => {
   res.send(diaryService.getNonSensitiveEntries());
-});
-
-router.post('/', (req, res) => {
-  const { date, weather, visibility, comment } = req.body;
-  const addedEntry = diaryService.addDiary({
-    date, 
-    weather,
-    visibility,
-    comment
-  });
-
-  res.json(addedEntry);
 });
 
 router.get('/:id', (req, res) => {
@@ -29,5 +20,30 @@ router.get('/:id', (req, res) => {
     res.sendStatus(404);
   }
 });
+
+const newDiaryParser = (req: Request, _res: Response, next: NextFunction) => { 
+  try {
+    newEntrySchema.parse(req.body);
+    console.log(req.body);
+    next();
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+const errorMiddleware = (error: unknown, _req: Request, res: Response, next: NextFunction) => { 
+  if (error instanceof z.ZodError) {
+    res.status(400).send({ error: error.issues });
+  } else {
+    next(error);
+  }
+};
+
+router.post('/', newDiaryParser, (req: Request<unknown, unknown, NewDiaryEntry>, res: Response<DiaryEntry>) => {
+  const addedEntry = diaryService.addDiary(req.body);
+  res.json(addedEntry);
+});
+
+router.use(errorMiddleware);
 
 export default router;
