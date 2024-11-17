@@ -4,3 +4,7 @@ export interface Entry {
   visibility: string,
   weather: string
 };
+
+export interface NewEntry extends Omit<Entry, 'id'> {
+  comment: string
+};
