@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { createDiaryEntry } from "../diaryService";
 import { Entry } from "../types";
+import axios from "axios";
 
 interface DiaryEntryFormProps {
-  diaryEntries: Entry[]
+  diaryEntries: Entry[],
+  setErrorNotification: React.Dispatch<React.SetStateAction<string>>
 };
 
 const DiaryEntryForm = (props: DiaryEntryFormProps) => {
-  const [entries, setEntries] = useState<Entry[]>(props.diaryEntries);
+  const { diaryEntries, setErrorNotification } = props
+  const [entries, setEntries] = useState<Entry[]>(diaryEntries);
   const [date, setDate] = useState<string>('');
   const [visibility, setVisibility] = useState<string>('');
   const [weather, setWeather] = useState<string>('');
@@ -16,13 +19,24 @@ const DiaryEntryForm = (props: DiaryEntryFormProps) => {
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const data = await createDiaryEntry({ date, visibility, weather, comment });
-    setEntries(entries.concat(data));
+    try {
+      const data = await createDiaryEntry({ date, visibility, weather, comment }) as Entry;
+      setEntries(entries.concat(data));
 
-    setDate('');
-    setVisibility('');
-    setWeather('');
-    setComment('');
+      setDate('');
+      setVisibility('');
+      setWeather('');
+      setComment('');
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error.response?.data.error[0];
+        const path = axiosError.path[0];
+        const received = axiosError.received;
+        setErrorNotification(`Error: Incorrect ${path}: ${received}`);
+
+        setTimeout(() => setErrorNotification(''), 5000)
+      }
+    }
   }
 
   return (
