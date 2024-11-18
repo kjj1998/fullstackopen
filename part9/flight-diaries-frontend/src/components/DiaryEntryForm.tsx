@@ -20,15 +20,15 @@ const DiaryEntryForm = (props: DiaryEntryFormProps) => {
     event.preventDefault();
 
     try {
+      console.log(weather);
       const data = await createDiaryEntry({ date, visibility, weather, comment }) as Entry;
       setEntries(entries.concat(data));
 
       setDate('');
-      setVisibility('');
-      setWeather('');
       setComment('');
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
+        console.log(error);
         const axiosError = error.response?.data.error[0];
         const path = axiosError.path[0];
         const received = axiosError.received;
@@ -41,9 +41,22 @@ const DiaryEntryForm = (props: DiaryEntryFormProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div>date <input value={date} onChange={(event) => setDate(event.target.value)}/></div>
-      <div>visibility <input value={visibility} onChange={(event) => setVisibility(event.target.value)}/></div>
-      <div>weather <input value={weather} onChange={(event) => setWeather(event.target.value)}/></div>
+      <div>date <input type="date" min="2015-01-01" max="2048-12-31"value={date} onChange={(event) => setDate(event.target.value)}/></div>
+      <div>
+        visibility &nbsp;&nbsp;
+        great <input type='radio' name='visibility' onChange={() => setVisibility('great')}/>
+        good <input type='radio' name='visibility' onChange={() => setVisibility('good')}/>
+        ok <input type='radio' name='visibility' onChange={() => setVisibility('ok')}/>
+        poor <input type='radio' name='visibility' onChange={() => setVisibility('poor')}/>
+      </div>
+      <div>
+        weather &nbsp;&nbsp;
+        sunny <input type='radio' name='weather' onChange={() => setWeather('sunny')}/>
+        sunny <input type='radio' name='weather' onChange={() => setWeather('sunny')}/>
+        cloudy <input type='radio' name='weather' onChange={() => setWeather('cloudy')}/>
+        stormy <input type='radio' name='weather' onChange={() => setWeather('stormy')}/>
+        windy <input type='radio' name='weather' onChange={() => setWeather('windy')}/>
+      </div>
       <div>comment <input value={comment} onChange={(event) => setComment(event.target.value)}/></div>
       <button type='submit'>add</button>
     </form>
