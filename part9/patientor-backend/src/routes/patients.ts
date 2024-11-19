@@ -33,6 +33,10 @@ patientRouter.post('/', newPatientParser, (req: Request<unknown, unknown, NewPat
   res.json(addedPatient);
 });
 
+patientRouter.get('/:id', (req, res) => {
+  res.send(patientService.getPatient(req.params.id));
+});
+
 patientRouter.use(errorMiddleware);
 
 export default patientRouter;
