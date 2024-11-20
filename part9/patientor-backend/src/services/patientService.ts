@@ -27,10 +27,7 @@ const addPatient = (patientInfo: NewPatientInfo): NonSensitivePatientEntry => {
   patients.push(newPatient);
   const { id, occupation, gender, dateOfBirth, name, entries } = newPatient;
 
-
-  return {
-    id, occupation, gender, dateOfBirth, name, entries
-  };
+  return { id, occupation, gender, dateOfBirth, name, entries };
 };
 
 const getPatient = (patientId: string): Patient | undefined => {

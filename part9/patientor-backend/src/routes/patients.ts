@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import patientService from '../services/patientService';
 import { newPatientSchema } from '../utils';
-import { NewPatientInfo, NonSensitivePatientEntry } from '../types';
+import { Patient, NewPatientInfo, NonSensitivePatientEntry } from '../types';
 
 const patientRouter = express.Router();
 
@@ -24,7 +24,7 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
   }
 };
 
-patientRouter.get('/', (_req, res) => {
+patientRouter.get('/', (_req, res: Response<NonSensitivePatientEntry[]>) => {
   res.send(patientService.getPatients());
 });
 
@@ -33,7 +33,7 @@ patientRouter.post('/', newPatientParser, (req: Request<unknown, unknown, NewPat
   res.json(addedPatient);
 });
 
-patientRouter.get('/:id', (req, res) => {
+patientRouter.get('/:id', (req, res: Response<Patient | undefined>) => {
   res.send(patientService.getPatient(req.params.id));
 });
 
