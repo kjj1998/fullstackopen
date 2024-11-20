@@ -1,25 +1,17 @@
-import data from '../data/patients';
+import patients from '../data/patients';
 
 import { v1 as uuid } from 'uuid';
-import { NonSensitivePatientEntry, NewPatientInfo, Patient, Gender } from "../types";
-
-const patients: Patient[] = data.map(datum => { 
-  return {
-    ...datum,
-    gender: datum.gender as Gender,
-    entries: []
-  };
-});
+import { NonSensitivePatientEntry, NewPatientInfo, Patient } from "../types";
 
 const getPatients = (): NonSensitivePatientEntry[] => {
-  return patients.map(({ id, name, gender, dateOfBirth, occupation }) => {
+  return patients.map(({ id, name, gender, dateOfBirth, occupation, entries }) => {
     return {
       id, 
       name, 
       gender,
       dateOfBirth,
       occupation,
-      entries: []
+      entries
     };
   });
 };
