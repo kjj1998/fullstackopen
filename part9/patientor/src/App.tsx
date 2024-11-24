@@ -25,7 +25,6 @@ const App = () => {
     };
     const fetchDiagnosisCodes = async () => {
       const diagnosisCodes = await diagnosisService.getAll();
-      console.log(diagnosisCodes);
       setDiagnosisCodes(diagnosisCodes);
     };
 
