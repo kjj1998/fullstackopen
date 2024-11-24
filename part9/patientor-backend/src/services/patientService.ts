@@ -43,7 +43,7 @@ const addEntry = (patientId: string, newEntry: Entry): Entry => {
 
   const patient = patients.find(patient => patient.id === patientId);
   patient?.entries.push(newEntry);
-  
+
   return newEntry;
 };
 
