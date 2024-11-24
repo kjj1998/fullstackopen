@@ -6,13 +6,20 @@ import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 
 
-import { Patient, Gender, Entry } from "../../types";
+import { Patient, Gender, Entry, Diagnosis } from "../../types";
 
 interface PatientProps {
   patient: Patient | undefined
+  diagnosisCodes: Diagnosis[] | undefined
 }
 
-const displayEntries = (entries: Entry[]) => {
+const findDiagnosisDescription = (code: string, diagnosisCodes: Diagnosis[]) => {
+  const foundDiagnosis = diagnosisCodes.filter((diagnosis) => diagnosis.code === code);
+
+  return foundDiagnosis[0].name;
+};
+
+const displayEntries = (entries: Entry[], diagnosisCodes: Diagnosis[]) => {
   if (entries.length > 0) {
     return (
       <div>
@@ -26,7 +33,7 @@ const displayEntries = (entries: Entry[]) => {
               <ul>
                 {
                   entry.diagnosisCodes !== undefined ?
-                    entry.diagnosisCodes.map(code => <li key={code}><Typography>{code}</Typography></li>)
+                    entry.diagnosisCodes.map(code => <li key={code}><Typography>{code} {findDiagnosisDescription(code, diagnosisCodes)}</Typography></li>)
                     : <></>
                 }
               </ul>
@@ -41,6 +48,7 @@ const displayEntries = (entries: Entry[]) => {
 const PatientPage = (props: PatientProps) => {
   if (props.patient !== undefined) {
     const { name, ssn, occupation, gender, entries } = props.patient;
+    const diagnosisCodes = props.diagnosisCodes as Diagnosis[];
 
     return (
       <div>
@@ -49,7 +57,7 @@ const PatientPage = (props: PatientProps) => {
         </Typography>
         <Typography variant="body1">ssn: {ssn}</Typography>
         <Typography variant="body1">occupation: {occupation}</Typography>
-        {displayEntries(entries)}
+        {displayEntries(entries, diagnosisCodes)}
       </div>
     );
   } 

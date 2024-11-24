@@ -18,7 +18,7 @@ app.get('/api/ping', cors(corsOptions), (_req, res) => {
   res.send('pong');
 });
 
-app.use('/api/diagnoses', diagnosisRouter);
+app.use('/api/diagnoses', cors(corsOptions), diagnosisRouter);
 app.use('/api/patients', cors(corsOptions), patientRouter);
 
 app.listen(PORT, () => {
